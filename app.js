@@ -15,36 +15,49 @@ const KEY = '15674931-a9d714b6e9d654524df198e00&q';
 
 // show images 
 const showImages = (images) => {
+  
   imagesArea.style.display = 'block';
   gallery.innerHTML = '';
   // show gallery title
   galleryHeader.style.display = 'flex';
+  console.log(images);
   images.forEach(image => {
+   
     let div = document.createElement('div');
     div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
     div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
-    gallery.appendChild(div)
-  })
-
+    gallery.appendChild(div);
+    
+    })
+    displaySpinner();
+    //console.log("spiner vanish");
 }
 
 const getImages = (query) => {
+  displaySpinner();
+  console.log("spiner show");
   fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
     .then(response => response.json())
-    .then(data => showImages(data.hitS))
+    .then(data => showImages(data.hits))
     .catch(err => console.log(err))
 }
 
 let slideIndex = 0;
 const selectItem = (event, img) => {
+  console.log(event);
   let element = event.target;
-  element.classList.add('added');
+  console.log(element);
  
   let item = sliders.indexOf(img);
   if (item === -1) {
     sliders.push(img);
+    element.classList.toggle('added');
+ 
   } else {
-    alert('Hey, Already added !')
+    //alert('Hey, Already added !')
+    element.classList.toggle('added');
+    sliders.splice(item, 1);
+ 
   }
 }
 var timer
@@ -68,6 +81,8 @@ const createSlider = () => {
   // hide image aria
   imagesArea.style.display = 'none';
   const duration = document.getElementById('duration').value || 1000;
+  durationFix=Math.abs(duration);
+  //console.log(durationFix);
   sliders.forEach(slide => {
     let item = document.createElement('div')
     item.className = "slider-item";
@@ -80,7 +95,7 @@ const createSlider = () => {
   timer = setInterval(function () {
     slideIndex++;
     changeSlide(slideIndex);
-  }, duration);
+  }, durationFix);
 }
 
 // change slider index 
@@ -108,8 +123,17 @@ const changeSlide = (index) => {
 
   items[index].style.display = "block"
 }
-
+document.getElementById("search")
+.addEventListener("keyup", function(event) {
+ 
+  if (event.key === 'Enter' ) {
+   //event.preventDefault();
+   document.getElementById('search-btn').click();
+  }
+});
 searchBtn.addEventListener('click', function () {
+  
+ // console.log("spiner displayed");
   document.querySelector('.main').style.display = 'none';
   clearInterval(timer);
   const search = document.getElementById('search');
@@ -120,3 +144,16 @@ searchBtn.addEventListener('click', function () {
 sliderBtn.addEventListener('click', function () {
   createSlider()
 })
+
+// data reload spinner for bonus 
+const displaySpinner=()=>{
+  const spinnerView= document.getElementById("spinnerId");
+  spinnerView.classList.toggle('d-none');
+  console.log(spinnerView.classList)
+
+}
+//toggle select &deselect
+
+// const toggleSelector(){
+//   document.getElementById("").classList.toggle()
+// }
