@@ -7,7 +7,6 @@ const sliderContainer = document.getElementById('sliders');
 // selected image 
 let sliders = [];
 
-
 // If this key doesn't work
 // Find the name in the url and go to their website
 // to create your own api key
@@ -15,49 +14,62 @@ const KEY = '15674931-a9d714b6e9d654524df198e00&q';
 
 // show images 
 const showImages = (images) => {
-  
+  // console.log("calling showImages", images.length);
+//No matching data condition
+document.getElementById("noMatchId").innerHTML=" ";
+  if (images.length == 0) {
+    const noMatchData=`
+    <div class="alert alert-danger m-3 p-4" role="alert">
+  Sorry! No Match Data Found
+</div>`
+document.getElementById("noMatchId").innerHTML=noMatchData;
+  }
   imagesArea.style.display = 'block';
   gallery.innerHTML = '';
   // show gallery title
   galleryHeader.style.display = 'flex';
-  console.log(images);
+  //console.log(images);
   images.forEach(image => {
-   
+
     let div = document.createElement('div');
     div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
     div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
     gallery.appendChild(div);
-    
-    })
-    displaySpinner();
-    //console.log("spiner vanish");
+
+  })
+  displaySpinner();
+  //console.log("spiner vanish");
 }
 
 const getImages = (query) => {
   displaySpinner();
-  console.log("spiner show");
+  //console.log("spiner show");
   fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
     .then(response => response.json())
     .then(data => showImages(data.hits))
-    .catch(err => console.log(err))
+    .catch(error => error)
+}
+//not found section
+const notFound = () => {
+  console.log("not found")
 }
 
 let slideIndex = 0;
 const selectItem = (event, img) => {
-  console.log(event);
+  //console.log(event);
   let element = event.target;
-  console.log(element);
- 
+  //console.log(element);
+
   let item = sliders.indexOf(img);
   if (item === -1) {
     sliders.push(img);
     element.classList.toggle('added');
- 
+
   } else {
     //alert('Hey, Already added !')
     element.classList.toggle('added');
     sliders.splice(item, 1);
- 
+
   }
 }
 var timer
@@ -81,7 +93,7 @@ const createSlider = () => {
   // hide image aria
   imagesArea.style.display = 'none';
   const duration = document.getElementById('duration').value || 1000;
-  durationFix=Math.abs(duration);
+  durationFix = Math.abs(duration);
   //console.log(durationFix);
   sliders.forEach(slide => {
     let item = document.createElement('div')
@@ -124,16 +136,15 @@ const changeSlide = (index) => {
   items[index].style.display = "block"
 }
 document.getElementById("search")
-.addEventListener("keyup", function(event) {
- 
-  if (event.key === 'Enter' ) {
-   //event.preventDefault();
-   document.getElementById('search-btn').click();
-  }
-});
+  .addEventListener("keyup", function (event) {
+
+    if (event.key === 'Enter') {
+      //event.preventDefault();
+      document.getElementById('search-btn').click();
+    }
+  });
 searchBtn.addEventListener('click', function () {
-  
- // console.log("spiner displayed");
+  // console.log("spiner displayed");
   document.querySelector('.main').style.display = 'none';
   clearInterval(timer);
   const search = document.getElementById('search');
@@ -146,14 +157,9 @@ sliderBtn.addEventListener('click', function () {
 })
 
 // data reload spinner for bonus 
-const displaySpinner=()=>{
-  const spinnerView= document.getElementById("spinnerId");
+const displaySpinner = () => {
+  const spinnerView = document.getElementById("spinnerId");
   spinnerView.classList.toggle('d-none');
-  console.log(spinnerView.classList)
+  // console.log(spinnerView.classList)
 
 }
-//toggle select &deselect
-
-// const toggleSelector(){
-//   document.getElementById("").classList.toggle()
-// }
